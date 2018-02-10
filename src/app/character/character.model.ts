@@ -14,7 +14,13 @@ export class Character {
   public OffensiveManeouver: any;
   public DefensiveManeouver: any;
   public status: any;
+  public surpriseAttack: boolean;
+  public surpriseTech: boolean;
   public PainfulTraining: boolean;
+  public coldResist: boolean;
+  public burnResist: boolean;
+  public poisonResist: boolean;
+  public superEvasion: boolean;
   public offenseRoll: number;
   public defenseRoll: number;
 
@@ -30,9 +36,15 @@ export class Character {
       this.bonusResistence = 0;
       this.bonusND = 0;
       this.bonusPrecision = 0;
+      this.surpriseAttack = false;
+      this.surpriseTech = false;
       this.OffensiveManeouver = {};
       this.DefensiveManeouver = {};
       this.status = {};
       this.PainfulTraining = false;
+      this.coldResist = false;
+      this.burnResist = false;
+      this.poisonResist = false;
+      this.superEvasion = false;
   }
 }

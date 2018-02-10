@@ -3,6 +3,25 @@ import { Character } from './character/character.model';
 
 @Injectable()
 export class BattleService {
+  defenderHasDamagingStatus: boolean;
+  offenderHasDamagingStatus: boolean;
+
+  defenderStatusDamageMultiplier: number;
+  offenderStatusDamageMultiplier: number;
+
+  defenderStatusDamageValue: number;
+  offenderStatusDamageValue: number;
+
+  offenderSuperEvasion: boolean;
+  offenderPoisonResist: boolean;
+  offenderColdResist: boolean;
+  offenderBurnResist: boolean;
+  defenderBurnResist: boolean;
+  defenderColdResist: boolean;
+  defenderPoisonResist: boolean;
+  defenderSuperEvasion: boolean;
+  offenderSurpriseAttack: boolean;
+  offenderSurpriseTech: boolean;
   defenderBonusResistence: number;
   defenderBonusND: number;
   offenderBonusDamage: number;
@@ -72,6 +91,87 @@ export class BattleService {
 
   }
 
+  resetMultipliers() {
+    this.damageMultiplier = 1;
+    this.NDMultiplier = 1;
+    this.precisionMultiplier = 1;
+    this.resistenceMultiplier = 1;
+    this.defenderHealthPenalty = 1;
+    this.offenderHealthPenalty = 1;
+  }
+
+  private setOffenderPlayerOne() {
+    this.offenderName = this.playerOne.name;
+    this.offenderDamage = this.playerOne.damage;
+    this.offenderPrecision = this.playerOne.precision;
+    this.offenderBonusDamage = this.playerOne.bonusDamage;
+    this.offenderBonusPrecision = this.playerOne.bonusPrecision;
+    this.offenderSurpriseAttack = this.playerOne.surpriseAttack;
+    this.offenderSurpriseTech = this.playerOne.surpriseAttack;
+    this.offenderHP = this.playerOne.currentHP;
+    this.offenderMaxHP = this.playerOne.maxHP;
+    this.offenderManeouver = this.playerOne.OffensiveManeouver;
+    this.offenderStatus = this.playerOne.status;
+    this.offenderPainfulTraining = this.playerOne.PainfulTraining;
+    this.offenderBurnResist = this.playerOne.burnResist;
+    this.offenderColdResist = this.playerOne.coldResist;
+    this.offenderPoisonResist = this.playerOne.poisonResist;
+    this.offenderSuperEvasion = this.playerOne.superEvasion;
+    this.offenderManualRoll = this.playerOne.offenseRoll;
+
+    this.defenderName = this.playerTwo.name;
+    this.defenderND = this.playerTwo.ND;
+    this.defenderResistence = this.playerTwo.resistence;
+    this.defenderBonusND = this.playerTwo.bonusND;
+    this.defenderBonusResistence = this.playerTwo.bonusResistence;
+    this.defenderHP = this.playerTwo.currentHP;
+    this.defenderMaxHP = this.playerTwo.maxHP;
+    this.defenderStatus = this.playerTwo.status;
+    this.defenderManeouver = this.playerTwo.DefensiveManeouver;
+    this.defenderPainfulTraining = this.playerTwo.PainfulTraining;
+    this.defenderBurnResist = this.playerTwo.burnResist;
+    this.defenderColdResist = this.playerTwo.coldResist;
+    this.defenderPoisonResist = this.playerTwo.poisonResist;
+    this.defenderSuperEvasion = this.playerTwo.superEvasion;
+    this.defenderManualRoll = this.playerTwo.defenseRoll;
+  }
+
+  private setOffenderPlayerTwo() {
+    this.offenderName = this.playerTwo.name;
+    this.offenderDamage = this.playerTwo.damage;
+    this.offenderPrecision = this.playerTwo.precision;
+    this.offenderBonusDamage = this.playerTwo.bonusDamage;
+    this.offenderBonusPrecision = this.playerTwo.bonusPrecision;
+    this.offenderSurpriseAttack = this.playerTwo.surpriseAttack;
+    this.offenderSurpriseTech = this.playerTwo.surpriseAttack;
+    this.offenderHP = this.playerTwo.currentHP;
+    this.offenderMaxHP = this.playerTwo.maxHP;
+    this.offenderStatus = this.playerTwo.status;
+    this.offenderManeouver = this.playerTwo.OffensiveManeouver;
+    this.offenderPainfulTraining = this.playerTwo.PainfulTraining;
+    this.offenderBurnResist = this.playerTwo.burnResist;
+    this.offenderColdResist = this.playerTwo.coldResist;
+    this.offenderPoisonResist = this.playerTwo.poisonResist;
+    this.offenderSuperEvasion = this.playerTwo.superEvasion;
+    this.offenderManualRoll = this.playerTwo.offenseRoll;
+
+    this.defenderName = this.playerOne.name;
+    this.defenderND = this.playerOne.ND;
+    this.defenderResistence = this.playerOne.resistence;
+    this.defenderBonusND = this.playerOne.bonusND;
+    this.defenderBonusResistence = this.playerOne.bonusResistence;
+    this.defenderHP = this.playerOne.currentHP;
+    this.defenderMaxHP = this.playerOne.maxHP;
+    this.defenderManeouver = this.playerOne.DefensiveManeouver;
+    this.defenderStatus = this.playerOne.status;
+    this.defenderPainfulTraining = this.playerOne.PainfulTraining;
+    this.defenderBurnResist = this.playerOne.burnResist;
+    this.defenderColdResist = this.playerOne.coldResist;
+    this.defenderPoisonResist = this.playerOne.poisonResist;
+    this.defenderSuperEvasion = this.playerOne.superEvasion;
+    this.defenderManualRoll = this.playerOne.defenseRoll;
+  }
+
   setMultipliers() {
     if (!this.healthPenaltyOff) {
       this.setOffenderHealthMultiplier();
@@ -89,11 +189,11 @@ export class BattleService {
      PrecisionMultiplier: this.offenderManeouver.PrecisionMultiplier,
      NDMultiplier: this.defenderManeouver.NDMultiplier,
      ResistenceMultiplier: this.defenderManeouver.ResistenceMultiplier };
-    console.log("Maneouver multipliers", multipliers);
      this.applyMultipliers(multipliers);
   }
 
   setStatusMultipliers() {
+    this.validateStatusImmunities();
     const multipliers = {
       DamageMultiplier: this.offenderStatus.DamageMultiplier,
       PrecisionMultiplier: this.offenderStatus.PrecisionMultiplier,
@@ -101,6 +201,19 @@ export class BattleService {
       ResistenceMultiplier: this.defenderStatus.ResistenceMultiplier };
       this.applyMultipliers(multipliers);
   }
+
+    validateStatusImmunities() {
+      if (this.defenderStatus.name === 'Queimadura' && this.defenderBurnResist === true) {
+        this.defenderStatus.ResistenceMultiplier = 1;
+      } else if (this.defenderStatus.name === 'Queimadura' && this.defenderBurnResist === false) {
+        this.defenderStatus.ResistenceMultiplier = 0.75;
+      }
+      if (this.defenderStatus.name === 'Congelamento' && this.defenderColdResist === true) {
+        this.defenderStatus.NDMultiplier = 1;
+      } else if (this.defenderStatus.name === 'Congelamento' && this.defenderColdResist === false) {
+        this.defenderStatus.NDMultiplier = 0.75;
+      }
+    }
 
   applyMultipliers({DamageMultiplier , PrecisionMultiplier , NDMultiplier, ResistenceMultiplier}) {
     this.damageMultiplier = this.damageMultiplier * DamageMultiplier;
@@ -176,67 +289,6 @@ export class BattleService {
     this.resistenceMultiplier = this.resistenceMultiplier * multiplier;
   }
 
-    resetMultipliers() {
-      this.damageMultiplier = 1;
-      this.NDMultiplier = 1;
-      this.precisionMultiplier = 1;
-      this.resistenceMultiplier = 1;
-      this.defenderHealthPenalty = 1;
-      this.offenderHealthPenalty = 1;
-    }
-
-    private setOffenderPlayerOne() {
-      this.offenderName = this.playerOne.name;
-      this.offenderDamage = this.playerOne.damage;
-      this.offenderPrecision = this.playerOne.precision;
-      this.offenderBonusDamage = this.playerOne.bonusDamage;
-      this.offenderBonusPrecision = this.playerOne.bonusPrecision;
-      this.offenderHP = this.playerOne.currentHP;
-      this.offenderMaxHP = this.playerOne.maxHP;
-      this.offenderManeouver = this.playerOne.OffensiveManeouver;
-      this.offenderStatus = this.playerOne.status;
-      this.offenderPainfulTraining = this.playerOne.PainfulTraining;
-      this.offenderManualRoll = this.playerOne.offenseRoll;
-
-      this.defenderName = this.playerTwo.name;
-      this.defenderND = this.playerTwo.ND;
-      this.defenderResistence = this.playerTwo.resistence;
-      this.defenderBonusND = this.playerTwo.bonusND;
-      this.defenderBonusResistence = this.playerTwo.bonusResistence;
-      this.defenderHP = this.playerTwo.currentHP;
-      this.defenderMaxHP = this.playerTwo.maxHP;
-      this.defenderStatus = this.playerTwo.status;
-      this.defenderManeouver = this.playerTwo.DefensiveManeouver;
-      this.defenderPainfulTraining = this.playerTwo.PainfulTraining;
-      this.defenderManualRoll = this.playerTwo.defenseRoll;
-    }
-
-    private setOffenderPlayerTwo() {
-      this.offenderName = this.playerTwo.name;
-      this.offenderDamage = this.playerTwo.damage;
-      this.offenderPrecision = this.playerTwo.precision;
-      this.offenderBonusDamage = this.playerTwo.bonusDamage;
-      this.offenderBonusPrecision = this.playerTwo.bonusPrecision;
-      this.offenderHP = this.playerTwo.currentHP;
-      this.offenderMaxHP = this.playerTwo.maxHP;
-      this.offenderStatus = this.playerTwo.status;
-      this.offenderManeouver = this.playerTwo.OffensiveManeouver;
-      this.offenderPainfulTraining = this.playerTwo.PainfulTraining;
-      this.offenderManualRoll = this.playerTwo.offenseRoll;
-
-      this.defenderName = this.playerOne.name;
-      this.defenderND = this.playerOne.ND;
-      this.defenderResistence = this.playerOne.resistence;
-      this.defenderBonusND = this.playerOne.bonusND;
-      this.defenderBonusResistence = this.playerOne.bonusResistence;
-      this.defenderHP = this.playerOne.currentHP;
-      this.defenderMaxHP = this.playerOne.maxHP;
-      this.defenderManeouver = this.playerOne.DefensiveManeouver;
-      this.defenderStatus = this.playerOne.status;
-      this.defenderPainfulTraining = this.playerOne.PainfulTraining;
-      this.defenderManualRoll = this.playerOne.defenseRoll;
-    }
-
     rollDice() {
       this.offenderRoll = (this.offenderManualRoll > 0) ? this.offenderManualRoll : this.d20();
       this.defenderRoll = (this.defenderManualRoll > 0) ? this.defenderManualRoll : this.d20();
@@ -254,15 +306,54 @@ export class BattleService {
         if (this.offenderRoll === 20 && this.defenderRoll !== 20) {
           this.calculateCriticalDamage(offenderTotal, defenderTotal);
         } else if (this.offenderRoll === 1 && this.defenderRoll !== 1) {
+          this.StatusDamage();
           this.showCriticalHitFailureMessage(offenderTotal, defenderTotal);
         } else if (this.defenderRoll === 20 && this.offenderRoll !== 20 ) {
+          this.StatusDamage();
           this.showCriticalSuccessMessage(offenderTotal, defenderTotal);
         } else if (this.defenderRoll === 1 && this.offenderRoll !== 1 ) {
+          this.StatusDamage();
           this.showCriticalFailureMessage(offenderTotal, defenderTotal, this.calculateDamage());
         } else {
           this.testAttackSuccess(offenderTotal, defenderTotal);
         }
       }
+
+
+  StatusDamage() {
+    this.verifyStatusDamage();
+    this.setStatusDamageMultiplier();
+    this.applyStatusDamage();
+  }
+
+  private applyStatusDamage() {
+    this.offenderStatusDamageValue =  Math.ceil(this.offenderMaxHP * this.offenderStatusDamageMultiplier );
+    this.defenderStatusDamageValue =  Math.ceil(this.defenderMaxHP * this.defenderStatusDamageMultiplier );
+    this.offenderHasDamagingStatus ? this.offenderHP = this.offenderHP - this.offenderStatusDamageValue
+      // tslint:disable-next-line:no-unused-expression
+      : null;
+    this.defenderHasDamagingStatus ? this.defenderHP = this.defenderHP - this.defenderStatusDamageValue
+      // tslint:disable-next-line:no-unused-expression
+      : null;
+  }
+
+  private setStatusDamageMultiplier() {
+    this.offenderStatusDamageMultiplier = (this.offenderStatus.name === 'Veneno' && this.offenderPoisonResist)
+      ? 0.03
+      : 0.05;
+    this.defenderStatusDamageMultiplier = (this.defenderStatus.name === 'Veneno' && this.defenderPoisonResist)
+      ? 0.03
+      : 0.05;
+  }
+
+  private verifyStatusDamage() {
+    this.offenderHasDamagingStatus = (this.offenderStatus.name === 'Veneno'
+      || this.offenderStatus.name === 'Queimadura'
+      || this.offenderStatus.name === 'Congelamento');
+    this.defenderHasDamagingStatus = (this.defenderStatus.name === 'Veneno'
+      || this.defenderStatus.name === 'Queimadura'
+      || this.defenderStatus.name === 'Congelamento');
+  }
 
   private calculateCriticalDamage(offenderTotal: number, defenderTotal: number) {
     this.damageMultiplier = this.damageMultiplier * 2;
@@ -276,6 +367,7 @@ export class BattleService {
           const damage = this.calculateDamage();
           this.showAttackSuccessMessage(offenderTotal, defenderTotal, damage);
         } else {
+          this.StatusDamage();
           this.showAttackFailedMessage(offenderTotal, defenderTotal);
         }
       }
@@ -287,6 +379,7 @@ export class BattleService {
           )
         );
         this.defenderHP = Math.max(0, this.defenderHP - damage);
+        this.StatusDamage();
         return damage;
       }
 
@@ -399,10 +492,37 @@ export class BattleService {
                                   ? ')' : '')
 
                                 + ')' + 'de dano!\n'
+
+                                + (this.offenderHasDamagingStatus
+                                  ? this.offenderName
+                                  + ' recebe '
+                                  + this.offenderStatusDamageValue
+                                  + '(' + this.offenderMaxHP
+                                  + ' * ' + this.offenderStatusDamageMultiplier
+                                  + ') de dano por conta do Status ' + this.offenderStatus.name
+                                  + '! \n'
+                                  : ''
+                                )
+
+                                + (this.defenderHasDamagingStatus
+                                  ? this.defenderName
+                                  + ' recebe '
+                                  + this.defenderStatusDamageValue
+                                  + '(' + this.defenderMaxHP
+                                  + ' * ' + this.defenderStatusDamageMultiplier
+                                  + ') de dano por conta do Status ' + this.defenderStatus.name
+                                  + '! \n'
+                                  : ''
+                                )
+
                                 + '[b]' + this.offenderName + ':[/b]' + this.offenderHP + '/' + this.offenderMaxHP + '\n'
                                 + '[b]' + this.defenderName + ':[/b]' + this.defenderHP + '/' + this.defenderMaxHP + '\n';
 
-                this.results.emit({message: message, offender: this.offender, damage: damage});
+                this.results.emit(
+                  {message: message,
+                    offender: this.offender,
+                    offenderHP: this.offenderHP,
+                    defenderHP: this.defenderHP });
               }
 
               showAttackFailedMessage(offenderTotal, defenderTotal) {
@@ -461,10 +581,36 @@ export class BattleService {
 
                                 + this.defenderName + ' [/b]evitou o dano!\n'
 
+                                + (this.offenderHasDamagingStatus
+                                  ? this.offenderName
+                                  + ' recebe '
+                                  + this.offenderStatusDamageValue
+                                  + '(' + this.offenderMaxHP
+                                  + ' * ' + this.offenderStatusDamageMultiplier
+                                  + ') de dano por conta do Status ' + this.offenderStatus.name
+                                  + '! \n'
+                                  : ''
+                                )
+
+                                + (this.defenderHasDamagingStatus
+                                  ? this.defenderName
+                                  + ' recebe '
+                                  + this.defenderStatusDamageValue
+                                  + '(' + this.defenderMaxHP
+                                  + ' * ' + this.defenderStatusDamageMultiplier
+                                  + ') de dano por conta do Status ' + this.defenderStatus.name
+                                  + '! \n'
+                                  : ''
+                                )
+
                                 + '[b]' + this.offenderName + ':[/b]' + this.offenderHP + '/' + this.offenderMaxHP + '\n'
                                 + '[b]' + this.defenderName + ':[/b]' + this.defenderHP + '/' + this.defenderMaxHP + '\n';
 
-                this.results.emit({message: message, offender: this.offender, damage: 0});
+                this.results.emit(
+                  {message: message,
+                    offender: this.offender,
+                    offenderHP: this.offenderHP,
+                    defenderHP: this.defenderHP });
               }
 
       showCriticalHitMessage(offenderTotal, defenderTotal, damage): any {
@@ -551,10 +697,37 @@ export class BattleService {
           ? ')' : '')
 
         + ')' + 'de dano massivo!\n'
+
+        + (this.offenderHasDamagingStatus
+          ? this.offenderName
+          + ' recebe '
+          + this.offenderStatusDamageValue
+          + '(' + this.offenderMaxHP
+          + ' * ' + this.offenderStatusDamageMultiplier
+          + ') de dano por conta do Status ' + this.offenderStatus.name
+          + '! \n'
+          : ''
+        )
+
+        + (this.defenderHasDamagingStatus
+          ? this.defenderName
+          + ' recebe '
+          + this.defenderStatusDamageValue
+          + '(' + this.defenderMaxHP
+          + ' * ' + this.defenderStatusDamageMultiplier
+          + ') de dano por conta do Status ' + this.defenderStatus.name
+          + '! \n'
+          : ''
+        )
+
         + '[b]' + this.offenderName + ':[/b]' + this.offenderHP + '/' + this.offenderMaxHP + '\n'
         + '[b]' + this.defenderName + ':[/b]' + this.defenderHP + '/' + this.defenderMaxHP + '\n';
 
-        this.results.emit({message: message, offender: this.offender, damage: damage});
+        this.results.emit(
+          {message: message,
+           offender: this.offender,
+           offenderHP: this.offenderHP,
+           defenderHP: this.defenderHP });
       }
       showCriticalHitFailureMessage(offenderTotal, defenderTotal): any {
 
@@ -588,10 +761,36 @@ export class BattleService {
 
                                 + this.offenderName + ' [/b]errou o ataque!\n'
 
+                                + (this.offenderHasDamagingStatus
+                                  ? this.offenderName
+                                  + ' recebe '
+                                  + this.offenderStatusDamageValue
+                                  + '(' + this.offenderMaxHP
+                                  + ' * ' + this.offenderStatusDamageMultiplier
+                                  + ') de dano por conta do Status ' + this.offenderStatus.name
+                                  + '! \n'
+                                  : ''
+                                )
+
+                                + (this.defenderHasDamagingStatus
+                                  ? this.defenderName
+                                  + ' recebe '
+                                  + this.defenderStatusDamageValue
+                                  + '(' + this.defenderMaxHP
+                                  + ' * ' + this.defenderStatusDamageMultiplier
+                                  + ') de dano por conta do Status ' + this.defenderStatus.name
+                                  + '! \n'
+                                  : ''
+                                )
+
                                 + '[b]' + this.offenderName + ':[/b]' + this.offenderHP + '/' + this.offenderMaxHP + '\n'
                                 + '[b]' + this.defenderName + ':[/b]' + this.defenderHP + '/' + this.defenderMaxHP + '\n';
 
-                this.results.emit({message: message, offender: this.offender, damage: 0});
+        this.results.emit(
+          {message: message,
+            offender: this.offender,
+            offenderHP: this.offenderHP,
+            defenderHP: this.defenderHP });
 
       }
       showCriticalSuccessMessage(offenderTotal, defenderTotal): any {
@@ -651,10 +850,37 @@ export class BattleService {
 
                                 + this.defenderName + ' [/b]evitou o dano com maestria!\n'
 
+                                + (this.offenderHasDamagingStatus
+                                    ? this.offenderName
+                                    + ' recebe '
+                                    + this.offenderStatusDamageValue
+                                    + '(' + this.offenderMaxHP
+                                    + ' * ' + this.offenderStatusDamageMultiplier
+                                    + ') de dano por conta do Status ' + this.offenderStatus.name
+                                    + '! \n'
+                                    : ''
+                                  )
+
+                                  + (this.defenderHasDamagingStatus
+                                    ? this.defenderName
+                                    + ' recebe '
+                                    + this.defenderStatusDamageValue
+                                    + '(' + this.defenderMaxHP
+                                    + ' * ' + this.defenderStatusDamageMultiplier
+                                    + ') de dano por conta do Status ' + this.defenderStatus.name
+                                    + '! \n'
+                                    : ''
+                                  )
+
+
                                 + '[b]' + this.offenderName + ':[/b]' + this.offenderHP + '/' + this.offenderMaxHP + '\n'
                                 + '[b]' + this.defenderName + ':[/b]' + this.defenderHP + '/' + this.defenderMaxHP + '\n';
 
-        this.results.emit({message: message, offender: this.offender, damage: 0});
+        this.results.emit(
+          {message: message,
+            offender: this.offender,
+            offenderHP: this.offenderHP,
+            defenderHP: this.defenderHP });
       }
 
       showCriticalFailureMessage(offenderTotal, defenderTotal, damage): any {
@@ -766,10 +992,36 @@ export class BattleService {
                                 ? ')' : '')
 
                               + ')' + 'de dano!\n'
+
+                              + (this.offenderHasDamagingStatus
+                                ? this.offenderName
+                                + ' recebe '
+                                + this.offenderStatusDamageValue
+                                + '(' + this.offenderMaxHP
+                                + ' * ' + this.offenderStatusDamageMultiplier
+                                + ') de dano por conta do Status ' + this.offenderStatus.name
+                                + '! \n'
+                                : ''
+                              )
+
+                              + (this.defenderHasDamagingStatus
+                                ? this.defenderName
+                                + ' recebe '
+                                + this.defenderStatusDamageValue
+                                + '(' + this.defenderMaxHP
+                                + ' * ' + this.defenderStatusDamageMultiplier
+                                + ') de dano por conta do Status ' + this.defenderStatus.name
+                                + '! \n'
+                                : ''
+                              )
                               + '[b]' + this.offenderName + ':[/b]' + this.offenderHP + '/' + this.offenderMaxHP + '\n'
                               + '[b]' + this.defenderName + ':[/b]' + this.defenderHP + '/' + this.defenderMaxHP + '\n';
 
-        this.results.emit({message: message, offender: this.offender, damage: damage});
+                              this.results.emit(
+                                {message: message,
+                                 offender: this.offender,
+                                 offenderHP: this.offenderHP,
+                                 defenderHP: this.defenderHP });;
       }
 
 

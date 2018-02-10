@@ -42,6 +42,8 @@ export class CharacterComponent implements OnInit {
       maxHP: '',
       damage: 0,
       bonusDamage: 0,
+      surpriseAttack: false,
+      surpriseTech: false,
       precision: 0,
       bonusPrecision: 0,
       ND: 0,
@@ -52,6 +54,10 @@ export class CharacterComponent implements OnInit {
       DefensiveManeouver: 0,
       status: 0,
       painfulTraining: false,
+      burnResist: false,
+      coldResist: false,
+      poisonResist: false,
+      superEvasion: false,
       offenseRoll: '',
       defenseRoll: ''
     });
@@ -59,10 +65,10 @@ export class CharacterComponent implements OnInit {
 
   observeResults() {
     this.battleService.results.subscribe((res) => {
-      if (res.offender !== this.playerSelected) {
-        this.playerForms.controls['currentHP'].patchValue(
-          Math.max(0, (this.playerForms.controls['currentHP'].value - res.damage))
-        );
+      if (res.offender === this.playerSelected) {
+        this.playerForms.controls['currentHP'].patchValue(res.offenderHP);
+      } else {
+        this.playerForms.controls['currentHP'].patchValue(res.defenderHP);
       }
     });
   }
@@ -108,11 +114,6 @@ export class CharacterComponent implements OnInit {
     }
   }
 
-  updateForm(value){
-    console.log("Value selected", value);
-  }
-
-
   setCharacter(form) {
 
     this.character.name = form.name;
@@ -122,6 +123,8 @@ export class CharacterComponent implements OnInit {
     this.character.bonusDamage = form.bonusDamage;
     this.character.precision = form.precision;
     this.character.bonusPrecision = form.bonusPrecision;
+    this.character.surpriseAttack = form.surpriseAttack;
+    this.character.surpriseTech = form.surpriseTech;
     this.character.ND = form.ND;
     this.character.bonusND = form.bonusND;
     this.character.resistence = form.resistence;
@@ -132,7 +135,11 @@ export class CharacterComponent implements OnInit {
     this.character.PainfulTraining = form.painfulTraining;
     this.character.offenseRoll = form.offenseRoll;
     this.character.defenseRoll = form.defenseRoll;
-    console.log("personagem", this.character);
+    this.character.burnResist = form.burnResist;
+    this.character.coldResist = form.coldResist;
+    this.character.poisonResist = form.poisonResist;
+    this.character.superEvasion = form.superEvasion;
+
   }
 
   getColor() {
