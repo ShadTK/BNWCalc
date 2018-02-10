@@ -1,0 +1,230 @@
+<div class="border rounded" [ngClass]="{ 'border-primary': playerSelected === 'PlayerOne', 'border-danger': playerSelected !== 'PlayerOne' }" style="margin: 1rem 1rem 1rem 1rem; padding: 1rem" >
+<div class="header"><h1> {{ playerSelected}} </h1></div>
+<hr [ngClass]="{'hr-title-p1': playerSelected === 'PlayerOne', 'hr-title-p2': playerSelected === 'PlayerTwo'}" />
+<form [formGroup]="playerForms">
+
+  <!-- Nome do jogador -->
+  <div class="form-row">
+    <div class="col-md-8">
+      <label>Nome</label>
+      <input type="text" formControlName="name" class="form-control" style="text-align:left">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-12">
+      <hr [ngClass]="{'hr-p1': playerSelected === 'PlayerOne', 'hr-p2': playerSelected === 'PlayerTwo'}" />
+    </div>
+  </div>
+
+  <!-- Barra de vida -->
+  <div class="form-row">
+    <div class="col-12"><label>Vida</label></div>
+  </div>
+  <div class="form-row" style="padding-bottom: 1rem">
+    <div class="col-12">
+      <div class="progress">
+          <div class="progress-bar"
+               role="progressbar"
+               [attr.aria-valuenow]="character.currentHP"
+               aria-valuemin="0" [attr.aria-valuemax] ="character.maxHP"
+
+               [ngStyle]="{backgroundColor: getColor()}"
+               [style.width]="(character.currentHP/character.maxHP)*100 + '%'">
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Input de vida -->
+  <div class="form-row">
+    <div class="col-7">
+      <select class="form-control" formControlName="status" id="sel1">
+          <option *ngFor="let status of statusList, let i=index" [value]="i">
+            {{status.name}}
+          </option>
+        </select>
+    </div>
+    <div class="col-2">
+        <div class="group">
+            <input class="hpinput" formControlName="currentHP" type="number" placeholder="HP">
+        </div>
+    </div>
+    <div class="col-1 separator">/</div>
+    <div class="col-2">
+        <div class="group">
+            <input class="hpinput" formControlName="maxHP" type="number" placeholder="Max">
+        </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+      <div class="col-12">
+        <hr [ngClass]="{'hr-p1': playerSelected === 'PlayerOne', 'hr-p2': playerSelected === 'PlayerTwo'}" />
+      </div>
+    </div>
+
+  <div class="form-row">
+    <div class="col-3">Ataque:</div>
+    <div class="col-9">
+      <select class="form-control" formControlName="OffensiveManeouver" id="sel1">
+          <option *ngFor="let offensiveManeouver of offensiveManeouversList, let i=index" [value]="i">
+            {{offensiveManeouver.name}}
+          </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row" style="margin-top: 0.5rem;">
+    <div class="col-6">
+    </div>
+    <div class="col-3" style="justify-content: center;">
+      Valor
+    </div>
+    <div class="col-3" style="justify-content: center;">
+      Bônus
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-3">
+      <!-- blank -->
+    </div>
+    <div class="col-3">
+      Dano:
+    </div>
+    <div class="col-3">
+      <input formControlName="damage" type="number" class="form-control">
+    </div>
+    <div class="col-3">
+      <input formControlName="bonusDamage" type="number" class="form-control">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-3">
+      <!-- blank -->
+    </div>
+    <div class="col-3">
+      Precisão:
+    </div>
+    <div class="col-3">
+      <input formControlName="precision" type="number" class="form-control">
+    </div>
+    <div class="col-3">
+      <input formControlName="bonusPrecision" type="number" class="form-control">
+    </div>
+  </div>
+
+  <div class="form-row">
+      <div class="col-12">
+        <hr [ngClass]="{'hr-p1': playerSelected === 'PlayerOne', 'hr-p2': playerSelected === 'PlayerTwo'}" />
+      </div>
+    </div>
+
+  <div class="form-row">
+      <div class="col-3">Defesa:</div>
+      <div class="col-9">
+        <select class="form-control" formControlName="DefensiveManeouver" id="sel1">
+          <option *ngFor="let maneouver of defensiveManeouversList, let i=index" [value]="i">
+            {{maneouver.name}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row" style="margin-top: 0.5rem;">
+      <div class="col-6">
+      </div>
+      <div class="col-3" style="justify-content: center;">
+        Valor
+      </div>
+      <div class="col-3" style="justify-content: center;">
+        Bônus
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-3">
+        <!-- blank -->
+      </div>
+      <div class="col-3">
+        ND:
+      </div>
+      <div class="col-3">
+        <input formControlName="ND" type="number" class="form-control">
+      </div>
+      <div class="col-3">
+        <input formControlName="bonusND" type="number" class="form-control">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-3">
+        <!-- blank -->
+      </div>
+      <div class="col-3">
+        Res:
+      </div>
+      <div class="col-3">
+        <input formControlName="resistence" type="number" class="form-control">
+      </div>
+      <div class="col-3">
+        <input formControlName="bonusResistence" type="number" class="form-control">
+      </div>
+    </div>
+
+      <div class="form-row">
+        <div class="col-12">
+          <hr [ngClass]="{'hr-p1': playerSelected === 'PlayerOne', 'hr-p2': playerSelected === 'PlayerTwo'}" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-12">
+          Aprimoramentos & Pericias
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col-12"  style="margin-left: 2rem;">
+            <input type="checkbox" class="form-check-input" id="painfulTraining" formControlName="painfulTraining">
+            <label class="form-check-label" for="painfulTraining">Treinamento Doloroso</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+          <div class="col-12">
+            <hr [ngClass]="{'hr-p1': playerSelected === 'PlayerOne', 'hr-p2': playerSelected === 'PlayerTwo'}" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="col-12">
+            Rolagem Manual <span style="font-size: 1rem">(deixe em branco para rolagem automatica)</span>
+          </div>
+        </div>
+          <div class="form-row">
+              <div class="col-3">
+                <!-- blank -->
+              </div>
+              <div class="col-3">
+                1d20 Ataque:
+              </div>
+              <div class="col-3">
+                <input formControlName="offenseRoll" type="number" class="form-control">
+              </div>
+              <div class="col-3">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-3">
+                <!-- blank -->
+              </div>
+              <div class="col-3">
+                1d20 Defesa:
+              </div>
+              <div class="col-3">
+                <input formControlName="defenseRoll" type="number" class="form-control">
+              </div>
+              <div class="col-3">
+              </div>
+        </div>
+
+</form>
+</div>
+
