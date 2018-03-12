@@ -152,9 +152,11 @@ export class CharacterComponent implements OnInit {
     }
   PopulatePlayerOne(form: any): any {
     this.battleService.playerOne = this.character;
+    console.log("Player one", this.character);
   }
 
   PopulatePlayerTwo(form: any): any {
     this.battleService.playerTwo = this.character;
+    console.log('Player Two', this.character);
   }
 }

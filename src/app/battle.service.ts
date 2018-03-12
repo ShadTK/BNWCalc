@@ -375,7 +375,16 @@ export class BattleService {
       calculateDamage() {
         const damage = Math.floor(
           Math.max(0,
-            ((this.offenderDamage * this.damageMultiplier) - (this.defenderResistence * this.resistenceMultiplier))
+            (
+              (
+                (this.offenderDamage + this.offenderBonusDamage)
+              * this.damageMultiplier
+            )
+            - (
+                (this.defenderResistence + this.defenderBonusResistence)
+              * this.resistenceMultiplier
+              )
+            )
           )
         );
         this.defenderHP = Math.max(0, this.defenderHP - damage);
@@ -446,7 +455,7 @@ export class BattleService {
                                 + this.offenderDamage
 
                                 + (this.offenderBonusDamage
-                                  ? + ' + ' + this.offenderBonusDamage + ')'
+                                  ?  ' + ' + this.offenderBonusDamage + ')'
                                   : ')' )
 
                                 + (this.offenderHealthPenalty !== 1
@@ -473,7 +482,7 @@ export class BattleService {
                                 + this.defenderResistence
 
                                 + (this.defenderBonusResistence
-                                  ? + ' + ' + this.defenderBonusResistence + ')'
+                                  ? ' + ' + this.defenderBonusResistence + ')'
                                   : ')' )
 
                                 + (this.defenderHealthPenalty !== 1
@@ -651,7 +660,7 @@ export class BattleService {
         + this.offenderDamage
 
         + (this.offenderBonusDamage
-          ? + ' + ' + this.offenderBonusDamage + ')'
+          ?  ' + ' + this.offenderBonusDamage + ')'
           : ')' )
 
         + (this.offenderHealthPenalty !== 1
@@ -678,7 +687,7 @@ export class BattleService {
         + this.defenderResistence
 
         + (this.defenderBonusResistence
-          ? + ' + ' + this.defenderBonusResistence + ')'
+          ? ' + ' + this.defenderBonusResistence + ')'
           : ')' )
 
         + (this.defenderHealthPenalty !== 1
@@ -946,7 +955,7 @@ export class BattleService {
                               + this.offenderDamage
 
                               + (this.offenderBonusDamage
-                                ? + ' + ' + this.offenderBonusDamage + ')'
+                                ?  ' + ' + this.offenderBonusDamage + ')'
                                 : ')' )
 
                               + (this.offenderHealthPenalty !== 1
@@ -973,7 +982,7 @@ export class BattleService {
                               + this.defenderResistence
 
                               + (this.defenderBonusResistence
-                                ? + ' + ' + this.defenderBonusResistence + ')'
+                                ? ' + ' + this.defenderBonusResistence + ')'
                                 : ')' )
 
                               + (this.defenderHealthPenalty !== 1
